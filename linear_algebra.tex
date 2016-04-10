@@ -1,0 +1,57 @@
+\documentclass{article}
+\input{shared_preamble.tex}
+\title{Exercises for Chapter 2: Linear Algebra}
+\begin{document}
+\maketitle
+
+\section*{Exercises}
+\begin{enumerate}
+\item The expression $\alpha \vu$ for $\alpha \in \R$ and
+$\vu \in \R^n$ defines a line of points that may be obtained by varying the
+value of $\alpha$.
+Derive an expression for the point $\vy$ that lies on this line that is
+as close as possible to an arbitrary point $\vx \in \R^n$.
+This operation of replacing a point by its nearest member within some set
+is called {\em projection}.
+
+
+{\em Exercise contributed by Ian Goodfellow}
+\end{enumerate}
+
+\section*{Solutions}
+\begin{enumerate}
+\item We begin by defining the distance from $\vy$ to $\vx$. We would like to
+find the $\vy$ that minimizes this distance:
+\begin{equation}
+|| \vx - \vy||^2.
+\end{equation}
+Next, we need to enforce the constraint that $\vy$ lies on the line defined
+by $\alpha \vu$. We can do this simply by defining $\vy$ to be $\alpha \vu$.
+\begin{equation}
+|| \vx - \alpha \vu ||^2.
+\end{equation}
+Next, we expand the expression:
+\begin{align}
+& || \vx - \alpha \vu ||^2 \\
+=& ( \vx - \alpha \vu )^\top (\vx - \alpha \vu) \\
+=& \vx^\top \vx - 2 \alpha \vx^\top \vu + \alpha^2 \vu^\top \vu \\
+=& \vx^\top \vx - 2 \alpha \vx^\top \vu + \alpha^2.
+\end{align}
+In the last line, we used the fact that $\vu$ is a unit vector to make
+the simplification $\vu^\top \vu = 1$.
+
+We can minimize this distance by taking the derivative with respect to
+$\alpha$ and setting it to zero:
+\begin{align}
+& - 2  \vx^\top \vu + 2 \alpha = 0 \\
+\Rightarrow & \alpha = \vx\top \vu.
+\end{align}
+
+Recalling that $\vy = \vx\top \vu$, we can conclude that $\vy = \vx^\top \vu \vu$.
+
+{\em Solution contributed by Ian Goodfellow}
+
+
+\end{enumerate}
+
+\end{document}
