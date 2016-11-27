@@ -1,0 +1,101 @@
+\documentclass[letterpaper,oneside]{book}
+\title{Exercises for the Deep Learning Textbook}
+
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+
+\newif\ifMIT
+%\MITtrue % uncomment to use MIT template
+\MITfalse
+\input{math_commands.tex}
+
+
+\newif\ifSOLSINTHEBACK
+%\SOLSINTHEBACKtrue    % uncomment to for final version (include files in 99ans/ in Answers/Sol'ns Appendix)
+\SOLSINTHEBACKfalse
+\ifSOLSINTHEBACK
+    \usepackage{answers}              %  for solutions in the back
+\else
+    \usepackage[nosolutionfiles]{answers}       % use when proofreading
+\fi
+\input{exercises_commands.tex}
+
+
+
+
+\begin{document}
+\maketitle
+
+
+\part{Applied Math and Machine Learning Basics}
+
+	\setcounter{chapter}{1}
+	\chapter{Linear Algebra}
+	\input{02_linear_algebra.tex}
+
+
+	\chapter{Probability and InformationTheory}
+	\input{03_prob_and_info_theory.tex}
+
+	% continue with other chapters here...
+
+
+
+
+\appendix 
+
+
+
+\ifSOLSINTHEBACK
+
+	\chapter{Answers and solutions}
+
+	\section*{Chapter 2 solutions}
+	\label{sec:chapter2sols}	
+	{ \footnotesize 
+
+		%		\subsection*{Answers to exercises}
+		%		\showExerciseAnswers{ch2}
+		%
+		%		\subsection*{Solutions to selected exercises}
+		%		\showExerciseSolutions{ch2}
+		
+		\subsection*{Answers to problems}
+		\showProblemAnswers{ch2}
+
+		\subsection*{Solutions to selected problems}
+		\showProblemSolutions{ch2}
+
+	}
+
+	
+	\section*{Chapter 3 solutions}
+	\label{sec:chapter3sols}	
+	{ \footnotesize 
+
+		\subsection*{Answers to exercises}
+		\showExerciseAnswers{ch3}
+
+		\subsection*{Solutions to selected exercises}
+		\showExerciseSolutions{ch3}
+		
+		\subsection*{Answers to problems}
+		\showProblemAnswers{ch3}
+
+		\subsection*{Solutions to selected problems}
+		\showProblemSolutions{ch3}
+
+	}
+
+
+
+\else
+	% NO SOLUTIONS IN THE BACK (shown inline for proofreading)
+\fi
+
+
+
+\end{document}

@@ -1,0 +1,212 @@
+
+
+
+%%%   SHARED    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{hint}{\vspace{1.5mm}\par\noindent Hint:}{}
+% for preventing newlines in answers (appear on a single line)
+\makeatletter
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%% END-OF-CHAPTER  PROBLEMS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+% CREDIT Andrew D. Hwang -- tex macros, via http://www.gutenberg.org/ebooks/33283
+\Newassociation{answer}{Answer}{answers}			% optional replacement for solution (if no space)
+\Newassociation{solution}{Solution}{solutions}			% defining the three saved "streams", solutions --> back of 
+
+% A special theorem style for end-of-chapter problems  --- P4.1, P4.2, P4.3, ...
+\newtheoremstyle{problemstyle}
+  {0.3\topsep}   % Space above
+  {0.7\topsep}   % Space below
+  {\normalfont}  % Body font
+  {0pt}       % Indent amount (empty value is the same as 0pt)
+  {\bfseries} % Theorem head font
+  {}          % Punctuation after theorem head
+  {6pt plus 1pt minus 1pt} % Space after theorem head
+  {P\thmnumber{#2} \thmnote{ (#3)}} % Theorem head spec
+%
+%
+\theoremstyle{problemstyle}
+\newtheorem{problem}{}[chapter]
+
+% a container for end-of-chapter problems 
+\newenvironment{problems}[1]{
+	\setcounter{problem}{0}
+	\Opensolutionfile{answers}[99anssol/answers_#1]
+	\Opensolutionfile{solutions}[99anssol/solutions_#1] 
+}{
+	\Closesolutionfile{answers}
+	\Closesolutionfile{solutions}
+}
+% Problem answers and solution display
+%
+\newcommand{\showProblemAnswers}[1]{	
+	%	\renewcommand{\Answerlabel}[1]{E##1.}
+	\renewenvironment{Answer}[1]{\textbf{P##1}}{\gobblepars}
+	\input{99anssol/answers_#1}
+}
+%
+\newcommand{\showProblemSolutions}[1]{	
+	\renewcommand{\Solutionlabel}[1]{\textbf{P##1}}
+	\input{99anssol/solutions_#1}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%% END-OF-SECTION  EXERCISES   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CREDIT Andrew D. Hwang -- tex macros, via http://www.gutenberg.org/ebooks/33283
+\Newassociation{esolution}{ESolution}{esolutions}			% defining the three saved "streams", solutions --> back of book
+\Newassociation{eanswer}{EAnswer}{eanswers}			% optional replacement for solution (if no space)
+
+
+% A special theorem style for end-of-section exercises  --- E1.1, E1.2, E1.3, ...
+\newtheoremstyle{exercisestyle}
+  {0.3\topsep}   % Space above
+  {0.7\topsep}   % Space below
+  {\normalfont}  % Body font
+  {0pt}       % Indent amount (empty value is the same as 0pt)
+  {\bfseries} % Theorem head font
+  {}          % Punctuation after theorem head
+  {5pt plus 1pt minus 1pt} % Space after theorem head
+  {E\thmnumber{#2}\thmnote{ (#3)}} % Theorem head spec
+%
+%  
+\theoremstyle{exercisestyle}
+\newtheorem{exercise}{}[chapter]
+
+	
+% a container for end-of-section exercises and end-of-chapter problems 
+\newcommand{\beforeFirstExercises}[1]{
+	\setcounter{exercise}{0}
+	\Opensolutionfile{esolutions}[99anssol/esolutions_#1] 
+	\Opensolutionfile{eanswers}[99anssol/eanswers_#1]
+}
+\newcommand{\afterLastExercises}[1]{
+	\Closesolutionfile{esolutions}
+	\Closesolutionfile{eanswers}
+}
+\newenvironment{exercises}[1]{ }{ }	% empty exercises env...
+% Exercises answers, and solution display
+\newcommand{\showExerciseSolutions}[1]{	
+	\renewcommand{\ESolutionlabel}[1]{\textbf{E##1}}
+	\input{99anssol/esolutions_#1}
+}
+%
+\newcommand{\showExerciseAnswers}[1]{	
+	%	\renewcommand{\Answerlabel}[1]{E##1.}
+	\renewenvironment{EAnswer}[1]{\textbf{E##1}}{\gobblepars}
+	\input{99anssol/eanswers_#1}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+%%%   MULTI-PART EXERCISES AND PROBLEMS    %%%%%%%%%%%%%%%%%%%%%%%%
+% CREDIT Jim Hefferon -- tex macros, via http://joshua.smcvt.edu/linearalgebra/
+%--------exparts and exparts*
+% For exercises with sub-parts. Use exparts* to print them across:
+% (a) xxx  (b) yyy  (c) zzz ..
+% while exparts prints them down:
+% (a) xxx
+% (b) yyy
+% Use this way:
+% \begin{exparts}
+% 	\partitem        % not just \item so works in *-ed version.
+% \end{exparts}
+%
+\newcounter{expartscount}
+\newenvironment{exparts}{%
+\def\partsitem{\item\relax}%
+\begin{expartslist}%
+}{%
+\end{expartslist}}
+%
+\newenvironment{exparts*}{%
+\def\partsitem{\penalty-400\hskip1em\relax\hbox{%
+\refstepcounter{expartscount}\textbf{\alph{expartscount})}\hspace*{.1em}}\nobreak}
+\begin{expartslist}
+	\setlength{\itemindent}{-1.07em}
+  	\setlength{\labelwidth}{0em}
+	\setlength{\leftmargin}{0em}
+	\setlength{\labelsep}{0em}	
+  	\setlength{\listparindent}{0em}
+	\rightskip=0pt plus7em\spaceskip=.1em\xspaceskip=.5em\relax%
+	\item[]}{%
+\end{expartslist}}
+%
+%
+\newenvironment{expartslist}{%
+\begin{list}{\textbf{(\alph{expartscount})}}{
+  \usecounter{expartscount}
+  % \setlength{\labelindent}{5em}	% not to be specified: computed form next three
+  \setlength{\leftmargin}{2em}		% = lebal
+  \setlength{\labelwidth}{2em}
+  \setlength{\labelsep}{0.5em}
+  \setlength{\itemindent}{0em}
+  \setlength{\listparindent}{\parindent}		% if multiple paragraphs in list item
+  \setlength{\rightmargin}{0em}
+  % VERTICAL
+  \setlength{\topsep}{0.4em}
+  \setlength{\parskip}{0ex}
+  \setlength{\partopsep}{0ex}
+  \setlength{\parsep}{0ex}
+  \setlength{\itemsep}{0ex}
+  }%
+}{%
+\end{list}}
+%
+%...........end: exparts and exparts*
+
+
+%--------ansparts* --- for inline ansers
+\usepackage[inline]{enumitem}
+\newenvironment{ansparts*}{%
+\def\partsitem{\item}
+\begin{enumerate*}[label=\textbf{(\alph*)}]}{
+\end{enumerate*}}
+
+%--------solparts --- for paragraph solutions
+\newenvironment{solparts}{%
+\def\partsitem{\item\relax}%
+\begin{solpartslist}%
+}{%
+\end{solpartslist}}
+%
+\newcounter{solpartscount}
+\newenvironment{solpartslist}{%
+\begin{list}{\textbf{(\alph{solpartscount})}}{
+  \usecounter{solpartscount}
+  % \setlength{\labelindent}{5em}	% not to be specified: computed form next three
+  \setlength{\leftmargin}{0em}
+  \setlength{\labelwidth}{3em}
+  \setlength{\labelsep}{0.5em}
+  \setlength{\itemindent}{1.8em}
+  \setlength{\listparindent}{\parindent}		% if multiple paragraphs in list item
+  \setlength{\rightmargin}{0em}
+  % VERTICAL
+  \setlength{\topsep}{0.1em}
+  \setlength{\parskip}{0ex}
+  \setlength{\partopsep}{0ex}
+  \setlength{\parsep}{0ex}
+  \setlength{\itemsep}{0ex}
+  }%
+}{%
+\end{list}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

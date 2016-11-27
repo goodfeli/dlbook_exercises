@@ -1,0 +1,95 @@
+%!TEX root = all_exercises.tex
+
+\beforeFirstExercises{ch3}
+\section{Why Probability?}
+
+add exercises here...
+
+\section{Random Variables}
+
+\begin{exercises}{ch3}
+
+	\begin{exercise} 
+		EXRCIS  QUESTION
+
+		\begin{eanswer}EXRCIS  ANS\end{eanswer}
+		\begin{esolution}
+			EXRCIS SOLUTION.
+		\end{esolution}
+	\end{exercise}
+
+
+\end{exercises}
+
+\section{Probability Distributions}
+
+\begin{exercises}{ch3}
+
+	\begin{exercise} 
+		Do the following vectors represent probability distributions?
+		\begin{exparts*}
+			\partsitem	$\left(\tfrac{1}{2}, \tfrac{1}{2}, \tfrac{1}{2} \right)^T$
+			\partsitem	$\left(\tfrac{1}{4}, \tfrac{1}{4}, \tfrac{1}{4}, \tfrac{1}{4} \right)^T$
+			\partsitem	$\left(0.3, 0.3, -0.1, 0.5  \right)^T$
+		\end{exparts*}
+
+		\begin{eanswer}\begin{ansparts*}
+					\partsitem No; weights don't add to one.
+					\partsitem Yes.
+					\partsitem No; contains a negative number.
+					\end{ansparts*}\end{eanswer}
+	\end{exercise}
+
+
+\end{exercises}
+
+
+
+
+
+
+\setcounter{section}{13}
+\section{Structured Probabilistic Models}
+
+add exercises here...
+
+
+\afterLastExercises{ch3}
+
+
+
+\setcounter{section}{14}
+\section{Probability and Information Theory Problems}
+
+\begin{problems}{ch3}
+
+
+	\begin{problem}		\label{problem:geometric_distr_biased_coin_until_heads}
+		You have a biased coin which lands on \texttt{heads} with probability $p$,
+		and consequently lands on \texttt{tails} with probability $(1-p)$.
+		Suppose you want to flip the coin until you get \texttt{heads}.
+		Define the random variable $N$ as the number of tosses required until the first \texttt{heads} outcome.
+		What is the probability mass function $P_N(n)$ for success on the $n$\textsuperscript{th} toss?
+		Confirm that the formula is a valid probability distribution by showing $\sum_{n=1}^\infty P_N(n) = 1$.
+
+		\begin{hint}
+			Find the probabilities for cases $n=1,2,3,\ldots$ and look for a pattern.
+		\end{hint}
+
+		\begin{solution}
+			The biased coin flip is modelled by a random variable $Y$,
+			and different coin flips correspond to random variables $Y_1$, $Y_2$, $Y_3$, \ldots which are independent copies of $Y$.
+			The probability of getting \texttt{heads} on the first flip is $P_N(1)=\textrm{Pr}\!\left( \{ Y_1=\texttt{heads} \} \right)\! =p$.
+			The probability of getting \texttt{heads} on the second flip corresponds
+			to the event $\{Y_1=\texttt{tails}\} \ \texttt{AND} \ \{Y_2=\texttt{heads} \}$.
+			We assumed the coin flips are independent so % the probability of this event is the product
+			$P_N(2)=(1-p)p$.
+			Similarly $P_N(3) = (1-p)^2p$.
+			The general formula is $P_N(n) = (1-p)^{n-1}p$.
+		\end{solution}
+	\end{problem}
+
+
+\end{problems}
+
+
