@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Quit on first error
 set -e
 
@@ -9,7 +10,7 @@ rm -f *aux
 # Create empty settings file if it does not exist
 # echo "" >> settings.tex
 # python make_acknowledgments.py
-pdflatex linear_algebra.tex
+pdflatex all_exercises.tex
 # ./bibtexall -min-crossrefs=999
 # makeindex dlbook
 # pdflatex dlbook.tex
