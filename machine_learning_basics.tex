@@ -1,0 +1,271 @@
+\documentclass{article}
+\input{shared_preamble.tex}
+\usepackage{enumitem}
+\newcommand{\utrain}{^{\textnormal{(train)}}}
+\newcommand{\strain}{_{\textnormal{train}}}
+\DeclareMathOperator*{\plim}{plim}
+
+\title{Exercises for Chapter 5: Machine Learning Basics}
+\begin{document}
+\maketitle
+
+\section*{Exercises}
+\begin{enumerate}
+\item The linear regression example sets a certain gradient equal to zero to set up the \emph{normal equations} for a general training set $\mX\utrain$, weights $\vw$ and outputs $\vy\utrain$. This exercise works out a small example so you can see it more concretely.
+
+Suppose we are trying to discover the formula $y = 4x_1 - 2x_2$ by linear regression. Let
+
+\begin{equation*}
+  \mX\utrain =  \begin{pmatrix}
+                1 & 0 \\
+                0 & 4 \\
+                2 & 5
+                \end{pmatrix}, 
+  \vy\utrain =  \begin{pmatrix}
+                4 \\
+                -8 \\
+                -2
+                \end{pmatrix},
+  \vw           = \begin{pmatrix}
+                w_1 \\
+                w_2
+                \end{pmatrix}.
+\end{equation*}                
+\begin{enumerate}
+    \item Assuming $\mX\utrain$ is fixed, how was $\vy\utrain$ chosen for this exercise?
+    \item Compute the $3\times1$ vector $\hat{\vy}\utrain = \mX\utrain\vw$. 
+    \item Compute the scalar $MSE\strain = \frac13 \lVert \hat{\vy}\utrain - \vy\utrain \rVert^2$.
+    \item Find $\frac{\partial}{\partial w_1} MSE\strain$ and $\frac{\partial}{\partial w_2} MSE\strain$. Put them together to form the $2\times1$ vector $\nabla_\vw MSE\strain$.
+    \item The computation in the book shows that this vector equals zero exactly when ${\mX\utrain}^T\mX\utrain\vw - {\mX\utrain}^T\vy\utrain = 0$. Compute this second expression to see how the expressions are related.
+    \item Solve the normal equations in the previous part to find $w_1$ and $w_2$. Are they correct?
+\end{enumerate}
+
+\item This exercise investigates the hyperparameter $\lambda$ discussed in the linear regression example. Suppose we are trying to fit a polynomial to the following data:
+
+    \begin{tabular}{c|c}
+    x & y \\
+    \hline
+    0 & 0 \\
+    1 & 3 \\
+    2 & 12
+    \end{tabular}
+
+and we give our model the capacity to fit cubic data, i.e. our model is
+\begin{equation*} y = w_0 + w_1 x + w_2 x^2 + w_3 x^3. \end{equation*}
+
+\begin{enumerate}
+    \item Show that our model has a bit too much capacity, because you could fit the data perfectly with a simple quadratic polynomial.
+    \item Show we can overfit the data with $w_0 = 0, w_1 = 2, w_2 = 0, w_3 = 1$.
+    \item What is $MSE\strain$ for each of the first two models?
+    \item The best \emph{line} for fitting this data is $y = 6x - 1$. Find $MSE\strain$ for this model. 
+    \item Now let $J(\vw) = MSE\strain + \lambda \vw^T\vw$ as in the book. Here $\lambda > 0$ is a \emph{hyperparameter}, a positive real number we have not decided yet. This imposes a cost for fitting the data with large coefficients. Find $J(\vw)$ for each of the three models above.
+    \item This method never prefers the simple quadratic over the cubic, no matter what $\lambda$ is. Why not? 
+    \item How could we fix $J(\vw)$ to prefer the model we consider to be simpler?
+    \end{enumerate}
+\item We said that the sample variance is a \emph{biased estimator} of the variance of a Gaussian distribution, because $\E(\hat{\sigma}_m^2) = \frac{m-1}{m}\sigma^2$ instead of exactly $\sigma^2$.
+    \begin{enumerate}
+        \item Compute $\lim_{m\to\infty} \E(\hat{\sigma}_m^2) - \sigma^2$.
+        \item What does that tell us about the sample variance as an estimator?
+    \end{enumerate}
+\item This exercise investigates the \emph{(weak) consistency} of the sample mean $\hat{\mu}_m$ as an estimator of the mean of a normal distribution. Let's use the \emph{standard normal distribution}, so $\mu = 0$ and $\sigma = 1$. 
+    \begin{enumerate}
+        \item Let $\eps = 2$ and $m = 1$. Find $P\left(\lvert \hat{\mu}_m - \mu \rvert > \eps \right)$. 
+        \item The Central Limit Theorem says that for large $m$, the sample mean $\hat{\mu}_m$ is approximately normally distributed with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{m}}$. For $\eps = 2$ and $m = 100$, find $P\left(\lvert \hat{\mu}_m - \mu \rvert > \eps \right)$.
+        \item What happens to this probability as $m \to \infty$? \item Does it matter what $\eps$ is?
+        \item Find $\plim_{m\to\infty} \hat{\mu}_m$. Conclude that the sample mean is a \emph{consistent} estimator for the mean of the standard normal distribution. 
+    \end{enumerate}
+\item This exercise dives into the definitions of the \emph{maximum likelihood estimator} for $\vtheta$:
+    \begin{align}
+    \vtheta_\textnormal{ML} & = \argmax_\vtheta \pmodel(\mathbb{X}; \vtheta)                  \nonumber    \\
+                           & = \argmax_\vtheta \prod_{i = 1}^m \pmodel(\vx^{(i)}; \vtheta)   \label{TMLdef1} \\
+                           & = \argmax_\vtheta \sum_{i = 1}^m \log \pmodel(\vx^{(i)}; \vtheta)   \label{TMLdef2}
+    \end{align}
+    In this exercise $x$ and $\theta$ will be whole numbers.
+    \begin{enumerate}
+        \item Consider the distribution $\pmodel(x;3)$ given by $\pmodel(x;3) = 9\cdot10^{3-x}$ for $x \in \{4, 5, 6, \ldots\}$ and $\pmodel(x; 3) = 0$ for $x \leq 3$. Show that this a probability distribution.
+        \item Fix a whole number $\theta > 0$. Consider the distribution $\pmodel(x;\theta)$ given by $\pmodel(x;\theta) = 9\cdot10^{\theta-x}$ for $x > \theta$ and $\pmodel(x; \theta) = 0$ for $x \leq \theta$. Show that this a probability distribution.
+        \item You have a single data point $x = 8$. Find $\pmodel(8; \theta)$ and use it to find $\argmax_\theta \pmodel(8; \theta)$.
+        \item You have three data points $x^{(1)} = 7, x^{(2)} = 4, x^{(3)} = 5$. Together these three data points are referred to as $\mathbb{X}$. Find $\pmodel(\mathbb{X}; 2)$, $\pmodel(\mathbb{X}; 3)$, and $\pmodel(\mathbb{X}; 4)$.
+        \item Use definition \ref{TMLdef1} to find $\theta_\textnormal{ML}$ for this data set.
+        \item Use definition \ref{TMLdef2} to find $\theta_\textnormal{ML}$ for this data set.
+    \end{enumerate}
+
+\item This exercise investigates the concept of MAP Estimation. Suppose we are trying to discover the linear relationship $y = 4x_1 - 2x_2$ by linear regression. We model the relationship as $y = w_1x_1 + w_2x_2$ and use as our prior $p(\vtheta) = \gN(\vw; 0; \frac{1}{\lambda}\mI^2)$. 
+    \begin{enumerate}
+    \item Write this probability distribution as a function $p(w_1,w_2)$.
+    \item Compute $\log p(w_1,w_2)$.
+    \item Show that the $\log$-prior term $\log p(w_1,w_2)$ is proportional to $\lambda \vw^T\vw$ plus a term that does not depend on $\vw$. A term that does not depend on $\vw$ does not affect the learning process.
+    \end{enumerate}
+
+\item This exercise demonstrates a kernel trick. Suppose you are trying to use a Support Vector Machine to divide the $xy$-plane into two classes: the points inside the ellipse $x^2 + 9y^2 = 9$ and those outside the ellipse. This relationship is not linear, so it cannot be handled by an SVM.
+    \begin{enumerate} 
+    \item Define a feature function $\phi$ by   
+                    $\phi\left( \begin{smallmatrix} x \\ y           \end{smallmatrix} \right) 
+                       = \left( \begin{smallmatrix} x^2 \\ xy \\ y^2 \end{smallmatrix} \right)$ 
+    and let $\vx^{(1)} = \left( \begin{smallmatrix} 2 \\ 0           \end{smallmatrix} \right), 
+             \vx^{(2)} = \left( \begin{smallmatrix} 0 \\ 2           \end{smallmatrix} \right)$. 
+          Find $\phi\left(\vx^{(i)}\right)$ for each $i$.
+    \item      Find a simplified expression for $\phi\left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right)^T \cdot \phi\left(\vx^{(1)}\right)$ 
+                           and another one for  $\phi\left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right)^T \cdot \phi\left(\vx^{(2)}\right)$.
+    \item Show that if we define the kernel $k$ by $k\left( 
+                                                     \left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right),
+                                                     \left( \begin{smallmatrix} a \\ b \end{smallmatrix} \right) \right)
+                            = a^2x^2 + b^2y^2$ then $k(\vx, \vx^{(i)}) = \phi\left(\vx\right)^T \cdot \phi\left(\vx^{(i)}\right)$ . Note that this allows us to get the benefit of the feature function $\phi$ without ever actually using the function $\phi$.
+    \item Find $\alpha_1, \alpha_2, b$ so that if $\vx = \left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right)$, 
+          then $f(\vx) = b + \sum_i \alpha_i k( \vx , \vx^{(i)})$ is positive when $x^2 + 9y^2 > 9$ and negative when  $x^2 + 9y^2 < 9$.
+    \end{enumerate}
+
+
+{\em Exercises contributed by Chris Cunningham}
+\end{enumerate}
+
+\section*{Solutions}
+\begin{enumerate}
+
+\item
+    \begin{enumerate}
+    \item Each value of $y$ in $\vy\utrain$ is equal to $4x_1 - 2x_2$.
+    \item $\hat{\vy}\utrain = \begin{pmatrix} w_1\\ 4w_2 \\ 2w_1 + 5w_2 \end{pmatrix}$
+    \item $MSE\strain = \frac13\left(\left(w_1-4\right)^2 + \left(4w_2+8\right)^2+\left(2w_1+5w_2+2\right)^2\right)$ 
+    \item Compute the derivatives using the chain rule instead of squaring those polynomials:
+    \begin{align*} \nabla_\vw MSE\strain & = \phantom{\frac13} \begin{pmatrix}
+                                            \frac{\partial}{\partial w_1}MSE\strain   \\ 
+                                            \frac{\partial}{\partial w_1}MSE\strain
+                                            \end{pmatrix} \\
+                              & = \frac13 \begin{pmatrix}
+                                            2(w_1-4)        & + 2(2w_1+5w_2+2)\cdot 2 \\ 
+                                            2(4w_2+8)\cdot4 & + 2(2w_1+5w_2+2)\cdot 5
+                                            \end{pmatrix} \\
+                              & = \frac23 \begin{pmatrix}
+                                            \phantom2(w_1-4)         & + \phantom2(2w_1+5w_2+2)\cdot 2  \\ 
+                                            \phantom2(4w_2+8)\cdot4  & + \phantom2(2w_1+5w_2+2)\cdot 5
+                                            \end{pmatrix} \\
+                              & = \frac23 \begin{pmatrix}
+                                            5w_1 + 10w_2 \\ 
+                                            10w_1 + 41w_2 + 42                       
+                                            \end{pmatrix}
+     \end{align*}
+    \item Multiply those matrices: 
+        \begin{align*}
+            {\mX\utrain}^T\mX\utrain\vw & = 
+            \begin{pmatrix}1&0&2\\0&4&5\end{pmatrix}
+            \begin{pmatrix}1&0\\0&4\\2&5\end{pmatrix}
+            \begin{pmatrix}w_1\\w_2\end{pmatrix} \\
+                                      & = 
+            \begin{pmatrix}5&10\\10&41\end{pmatrix}
+            \begin{pmatrix}w_1\\w_2\end{pmatrix} \\
+                                      & = 
+             \begin{pmatrix}5w_1+10w_2\\10w_1+41w_2\end{pmatrix}. \\
+            {\mX\utrain}^T\vy\utrain    & =
+            \begin{pmatrix}1&0&2\\0&4&5\end{pmatrix}
+            \begin{pmatrix}4\\-8\\-2\end{pmatrix} \\
+                                      & = 
+            \begin{pmatrix}0\\-42\end{pmatrix}. \\
+        \end{align*}
+        So ${\mX\utrain}^T\mX\utrain\vw - {\mX\utrain}^T\vy\utrain =
+        \begin{pmatrix}
+            5w_1 + 10w_2 \\ 
+            10w_1 + 41w_2 + 42
+            \end{pmatrix}$, the same matrix that appeared in the previous part.
+    \item If $5w_1 + 10w_2 = 0$ then $w_1 = -2w_2$. Substitute into the second equation to get $10\cdot-2w_2 + 41w_2 + 42 = 0$; $21w_2 = -42$, so $w_2 = -2$ and $w_1 = 4$.
+    
+    This is just as we intended at the start of the problem: The solution is $y = \vw^T\vx = 4x_1 - 2x_2$.
+    \end{enumerate}
+    
+\item
+\begin{enumerate}
+    \item Each of these values of $y$ satisfies $y = 3x^2$.
+    \item Each of these values of $y$ also satisfies $y = x^3 + 2x$.
+    \item With a perfect fit, $MSE\strain = 0$ for both models.
+    \item Here the model predicts $y = -1, 5, 11$ when the true values are $y = 0, 3, 12$. The sum of the squares of the errors are $1 + 4 + 1 = 6$, so the mean squared error is $2$.
+    \item Here, $\vw^T\vw$ is the sum of the squares of the coefficients of the polynomial. For the cubic, that is 9. For the quadratic, that is 5. For the line, that is 37. So for the three cases,
+    \begin{tabular}{l|c}
+    Model & $J(\vw)$ \\
+    \hline
+    $y = 3x^2$     & $9\lambda$ \\
+    $y = x^3 + 2x$ & $5\lambda$ \\
+    $y = 6x - 1$   & $2 + 37\lambda$
+    \end{tabular}
+    \item $9\lambda \geq 5\lambda$ for any positive value of $\lambda$.
+    \item This function $J$ only imposes a cost for using large coefficients, no matter which coefficients are nonzero. If we think it is ``simpler'' to use a quadratic than a cubic, then we need to build that into our function $J$. For example, here we used 
+    \begin{equation*} J(\vw) = MSE\strain + \lambda w_0^2+\lambda w_1^2+\lambda w_2^2+\lambda w_3^2. \end{equation*}
+    We could instead use something like
+    \begin{equation*} J(\vw) = MSE\strain + \lambda w_0^2+\lambda w_1^2+ \lambda^2 w_2^2+ \lambda^3 w_3^2 \end{equation*}
+    if we wanted to penalize the model for using the higher powers of $x$. For the examples above, we would then end up with
+
+    \begin{tabular}{l|c}
+    Model & $J(\vw)$ \\
+    \hline
+    $y = 3x^2$     & $9\lambda^2$ \\
+    $y = x^3 + 2x$ & $4\lambda + \lambda^3$ \\
+    $y = 6x - 1$   & $2 + 37\lambda$
+    \end{tabular}.
+    
+    Then, for large values of $\lambda$, we will prefer the underfit model $y = 6x - 1$. For $\lambda = 0$, we cannot distinguish between the quadratic and the cubic. For intermediate values of $\lambda$ like $\lambda = \frac13$, we will prefer the ``simpler'' quadratic as desired. 
+\end{enumerate}
+\item
+    \begin{enumerate}
+    \item $\lim_{m\to\infty} \E(\hat{\sigma}_m^2) - \sigma^2 = \lim_{m\to\infty} \frac{m-1}{m}\sigma^2 - \sigma^2 = \sigma^2 - \sigma^2 = 0$.
+    \item The sample variance is an \emph{asymptotically unbiased estimator}.
+    \end{enumerate}
+\item
+    \begin{enumerate} 
+    \item When $m=1$, $\hat{\mu}_m$ is just a single data point. In this distribution, the probability that a single data point is more than two standard deviations away from the mean is $P(|z| > 2)$ which is about $1 -0.95 = 0.05$.
+    \item According to the assumptions we have made, $\lvert \hat{\mu}_m - \mu \rvert$ is normally distributed with a mean of 0 and a standard deviation of $\frac{1}{10}$. The probability that this quantity is larger than 2 is $P(|z| > 20)$ which is about $5.5 \times 10^{-89}$.
+    \item For large $m$, $P\left(\lvert \hat{\mu}_m - \mu \rvert > \eps \right) = P(|z| > 2 \sqrt{m})$, which approaches zero as $m \to \infty$.
+    \item No, for any fixed $\eps$ and large $m$ this probability is $P(|z| > \eps\sqrt{m})$, which approaches zero as $m \to \infty$ for any fixed $\eps$.
+    \item We argued that for any $\eps > 0$, $P(\lvert \hat{\mu}_m - \mu \rvert > \eps) \to 0$ as $m \to \infty$. This means that $\plim_{m \to \infty} \hat{\mu}_m = \mu$. This shows that the sample mean is a (weakly) consistent estimator for the mean of the standard normal distribution.
+    \end{enumerate}
+\item
+    \begin{enumerate}
+        \item Each probability is between 0 and 1, and the sum of the probabilities is $0 + 0 + 0 + 0 + 0.9 + 0.09 + 0.009 + \cdots = 0.99999\cdots = 1$.
+        \item The probabilities are all 0 when $x \leq \theta$, but the next one is $0.9$, and the total is again $0.9 + 0.09 + 0.009 +\cdots = 0.99999\cdots = 1$.
+        \item When $\theta \geq 8$, $\pmodel(8; \theta) = 0$. When $\theta < 8$, $\pmodel(8; \theta) = 9\cdot10^{\theta - 8}$. This is maximized when $\theta = 7$, when the probability is $0.9$.
+        \item If $\theta = 2$, then the probability $\pmodel(7; 2)$ of getting $x = 7$ would be $9 \cdot 10^{2-7} = 0.00009$. We can do this for each $\theta$ and each $x$:
+        
+        $\begin{array}{c|c|c|c||c}
+            \theta & \pmodel(7; \theta) & \pmodel(4; \theta) & \pmodel(5; \theta) & \pmodel(\mathbb{X}; \theta) = \prod \pmodel(x;\theta) \\
+            \hline
+            2 & 9 \cdot 10^{-5} & 9 \cdot 10^{-2} & 9 \cdot 10^{-3} & 9^3 \cdot 10^{-10}\\
+            3 & 9 \cdot 10^{-4} & 9 \cdot 10^{-1} & 9 \cdot 10^{-2} & 9^3 \cdot 10^{-7}\\
+            4 & 9 \cdot 10^{-3} & 0 & 9 \cdot 10^{-1} & 0\\
+        \end{array}$
+        \item The product of the probabilities is maximized when $\theta = 3$, so we conclude that $\theta_\textnormal{ML} = 3$. 
+        \item When we take (base 10) logarithms and add the probabilities instead of multiplying the probabilities, the numbers stay in the same order:
+        $\begin{array}{c|c|c|c||c}
+            \theta & \log\pmodel(7; \theta) & \log\pmodel(4; \theta) & \log\pmodel(5; \theta) & \vbox{\hbox{\strut$\log\pmodel(\mathbb{X}; \theta)$}\hbox{\strut $= \sum \log\pmodel(x;\theta)$}} \\
+            \hline
+            2 & -5 + \log 9 & -2 + \log 9 & -3 + \log 9 & -10 + 3 \log 9 \\
+            3 & -4 + \log 9 & -1 + \log 9 & -2 + \log 9 & -7  + 3 \log 9 \\
+            4 & -3 + \log 9 & -\infty     & -1 + \log 9 & -\infty \\
+        \end{array}$
+        This is still maximized at $\theta = 3$.
+    \end{enumerate}
+\item 
+    \begin{enumerate}
+        \item In this case the prior is 
+$$p(w_1, w_2) = \frac{\lambda}{2\pi}\exp\left(-\frac\lambda2(w_1^2+w_2^2)\right).$$
+        \item If $p(w_1, w_2) = \frac{\lambda}{2\pi}\exp\left(-\frac\lambda2(w_1^2+w_2^2)\right)$, then using the natural logarithm, $\log p(w_1,w_2) = - \frac{\lambda}{2}(w_1^2+w_2^2) + \log \frac{\lambda}{2\pi}$. 
+        \item $\lambda \vw^T \vw = \lambda(w_1^2 + w_2^2)$, so indeed the $\log$-prior term is $-\frac12$ times $\lambda \vw^T \vw$, plus $\log\frac\lambda{2\pi}$ which does not affect the learning process.
+    \end{enumerate}
+
+\item \begin{enumerate}
+        \item $\phi\left( \vx^{(1)}\right) = \left( \begin{smallmatrix} 4 \\ 0 \\ 0 \end{smallmatrix} \right);
+               \phi\left( \vx^{(2)}\right) = \left( \begin{smallmatrix} 0 \\ 0 \\ 4 \end{smallmatrix} \right)$.
+        \item $\phi\left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right)^T \cdot \phi\left(\vx^{(1)}\right) = 
+        \left(\begin{smallmatrix} x^2 & xy & y^2 \end{smallmatrix}\right) \cdot \left( \begin{smallmatrix} 4 \\ 0 \\ 0 \end{smallmatrix} \right) = 4x^2.
+        \newline
+        \phi\left( \begin{smallmatrix} x \\ y \end{smallmatrix} \right)^T \cdot \phi\left(\vx^{(2)}\right) = 
+        \left(\begin{smallmatrix} x^2 & xy & y^2 \end{smallmatrix}\right) \cdot \left( \begin{smallmatrix} 0 \\ 0 \\ 4 \end{smallmatrix} \right) = 4y^2.$
+        \item For $i=1$ we have $a=2, b=0$ so $k\left(\vx, \vx^{(i)}\right) = 4x^2$ as desired. 
+        \newline
+        For $i=2$ we have $a=0, b=2$ so $k\left(\vx, \vx^{(i)}\right) = 4y^2$ as desired.
+        \item There are many correct answers; one is that $x^2 + 9y^2 = 9$ can be written as $4x^2 + 36y^2 = 36$, so we can use $b = -36, \alpha_1 = 1, \alpha_2 = 9$. Then $f(\vx) = -36 + 1\cdot4x^2 + 9\cdot 4y^2$ is positive when $x^2 + 9y^2 > 9$ and negative when $x^2 + 9y^2 < 9$.
+\end{enumerate}
+
+{\em Solutions contributed by Chris Cunningham}
+
+
+\end{enumerate}
+
+\end{document}
