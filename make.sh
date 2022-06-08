@@ -10,6 +10,7 @@ rm -f *aux
 # echo "" >> settings.tex
 # python make_acknowledgments.py
 pdflatex linear_algebra.tex
+pdflatex machine_learning_basics.tex
 # ./bibtexall -min-crossrefs=999
 # makeindex dlbook
 # pdflatex dlbook.tex
