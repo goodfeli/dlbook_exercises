@@ -1,0 +1,385 @@
+\documentclass{article}
+\input{shared_preamble.tex}
+\usepackage{enumitem}
+
+\newcommand{\twovector}[2]{ \begin{smallmatrix} #1 \\ #2 \end{smallmatrix} }
+\newcommand{\ptwovector}[2]{ \left( \twovector{#1}{#2} \right) }
+
+\title{Exercises for Chapter 6: Deep Feedforward Networks}
+\begin{document}
+\maketitle
+
+\section*{Which exercise goes with which section?}
+\begin{itemize}
+    \item Exercise \ref{DFN_ex_calculusofvariations}: 6.2.1.2 Learning Conditional Statistics.
+    \item Exercise \ref{DFN_ex_bernoulli}: 6.2.2.2 Sigmoid Units for Bernoulli Output Distributions.
+    \item Exercise \ref{DFN_ex_softmax}: 6.2.2.3 Softmax Units for Multinoulli Output Distributions.
+    \item Exercise \ref{DFN_ex_linearhiddenunit}: 6.3.3 Other Hidden Units.
+    \item Exercise \ref{DFN_ex_chainrule}: 6.5.2 Chain Rule of Calculus.
+    \item Exercise \ref{DFN_ex_chainbackprop}: 6.5.3 Recursively Applying the Chain Rule to Obtain Backprop.
+    \item Exercise \ref{DFN_ex_gradientsimplification}: 6.5.9 Differentiation Outside the Deep Learning Community.
+    \item Exercise \ref{DFN_ex_Christianson}: 6.5.10 Higher-Order Derivatives.
+\end{itemize}
+    
+\section*{Exercises}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_calculusofvariations} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This exercise investigates the two results from calculus of variations that are presented in this section. Consider the following finite data set of six data points where $x \in \R$ and $\vy \in \R^2$.
+
+\begin{equation*}
+\begin{array}{c|c||c|c}
+    x & y & x & y \\
+    \hline
+    \hline
+    1 & \ptwovector00 & 2 & \ptwovector00 \\
+    \hline
+    1 & \ptwovector12 & 2 & \ptwovector24 \\
+    \hline
+    1 & \ptwovector57 & 2 & \ptwovector{10}{14}
+\end{array}
+\end{equation*}
+
+We will try to fit the data with a function $f(x) = \ptwovector{ax}{bx}$ for some $a, b \in \R$.
+
+\begin{enumerate}
+    \item Find $\E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert^2$ in terms of $a$ and $b$.
+    \item Find $f^* = \argmin_f \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert^2$.
+    \item Show that $f^*$ computes the mean of $\vy$ for each value of $x$.
+    \item Find $\E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert_1$ in terms of $a$ and $b$.
+    \item Find $f^* = \argmin_f \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert_1$.
+    \item Show that $f^*$ computes the median of $\vy$ for each value of $x$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_bernoulli} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $y$ be a binary variable, so it only takes on values $0$ or $1$. Show that $\frac{\exp(yz)}{\sum_{y' = 0}^1 \exp(y'z)} = \sigma((2y-1))z$ in both cases ($y = 0$ or $y = 1$).  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_softmax} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This exercise develops intuition for the $\softmax$ function.
+\begin{enumerate}
+    \item Find $\softmax \ptwovector{7}{7}$.
+    \item Find $\softmax \ptwovector{\ln 3}{0}$.
+    \item Find $\softmax \ptwovector{9\ln 3}{\ln 3}$.
+    \item Let $a$ be a real number. Find $\softmax \ptwovector{a + 8 \ln 3}{a}$.
+    \item Use the mental shortcut that $\ln 20 \approx 3$ to find a quick estimate for $\softmax \left(\begin{smallmatrix} 6 \\ 3 \\ 0 \end{smallmatrix}\right)$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_linearhiddenunit} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Consider the linear map $\R^2 \to \R^3$ given by
+\begin{equation*}
+\begin{pmatrix} a \\ b \end{pmatrix} 
+\mapsto      
+\begin{pmatrix} a - b \\ 3(a - b) \\ 5(a - b) \end{pmatrix}.
+\end{equation*}
+\begin{enumerate}
+    \item Write a matrix $\mW$ so that this map can be written as $\vy = \mW^T \vx$.
+    \item Use the small rank of this map to find nice matrices $\mU$ and $\mV$ so that this map can be written as $\vy = \mV^T \mU^T \vx$.
+    \item What are $p, q$ and $n$ here and why is it significant that $(n+p)q < np$?
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_chainrule} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $\vy = \left(\begin{smallmatrix} y_1\\y_2\\y_3 \end{smallmatrix}\right)$. We will define a function $z(\vy)$ and also a function $\vy(x)$, so that $z$ is in the end, a function of the real number $x$. Let
+\begin{equation*}
+    z\begin{pmatrix} y_1\\y_2\\y_3 \end{pmatrix} = 3y_1 + 4y_2 + 5y_3,
+    \text{ and } 
+    \vy(x) = \begin{pmatrix} x^2 \\ 3x \\ 8 \end{pmatrix}.
+\end{equation*}
+\begin{enumerate}
+    \item Find an explicit representation of $z$ as a function only in terms of $x$.
+    \item Find $\frac{dz}{dx}$ using your answer to the previous part.
+    \item Find $\frac{dz}{dx}$ using the chain rule: $\frac{dz}{dx} = \sum_j \frac{\partial z}{\partial y_j} \frac{dy_j}{dx}$.
+    \item Find $\frac{dz}{dx}$ by computing 
+    $\left(\frac{\partial \vy}{\partial x}\right)^T \nabla_\vy z$.
+
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_chainbackprop} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $f(a) = a^2 + 1$ and consider the computational graph as in the text where $z = f(y), y = f(x), x = f(w)$. Our goal is to compute the derivative $\frac{dz}{dw}$ at $w = 1$ using two approaches.
+\begin{enumerate} 
+    \item Use $\frac{dz}{dw} = f'(y)f'(x)f'(w)$ to compute the derivative at $w=1$. Note that this requires more memory but less computation.
+    \item Use $\frac{dz}{dw} = f'(f(f(w)))f'(f(w))f'(w)$ to compute the derivative at $w=1$. Note that this requires less memory but more computation.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_gradientsimplification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Suppose we have variables $p_1, p_2, \ldots, p_n$ representing probabilities, and variables $z_1, z_2, \ldots, z_n$ representing unnormalized log probabilities. Suppose we define the softmax function 
+\begin{equation*}
+    q_j = \frac{\exp(z_j)}{\sum_k \exp(z_k)}
+\end{equation*}
+and construct a cross-entropy loss $J = -\sum_j p_j \log q_j$. 
+
+\begin{enumerate}
+    \item Show that $\frac{\partial}{\partial z_i} \log q_j = \phantom{1}-q_i$, when $i \neq j$.
+    \item Show that $\frac{\partial}{\partial z_i} \log q_i = 1 - q_i$, where the indices match.
+    \item Show that $\frac{\partial J}{\partial z_i} = q_i - p_i$, a simplification that a general back-propagation algorithm would miss.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_Christianson}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Let $f(\vx) = x_1^2 + x_1x_2$ and let $\vv = \ptwovector{a}{b}$. 
+\begin{enumerate}
+    \item Directly compute the Hessian matrix $\mH$ of $f$, and then find $\mH \vv$.
+    \item Compute $\nabla_\vx\left[ \left(\nabla_\vx f(\vx) \right)^T \vv\right]$ as another way to find $\mH \vv$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\em Exercises contributed by Chris Cunningham}
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section*{Solutions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_calculusofvariations_solution}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item With only six data points, the expected value is $\frac16$ of the sum.
+    \begin{align*}
+        \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert^2 & = \frac16 \sum_{i=1}^6 \left(y^{(i)}_1-ax^{(i)}\right)^2 + \left((y^{(i)}_2-bx^{(i)}\right)^2 \\
+        & = \frac{1}{6} \left(
+                \begin{array}{c c}
+                \twovector{\phantom{+}(0-a)^2}{+(0-b)^2} & \twovector{+(0 -2a)^2}{+(0 -2b)^2} \\
+                \twovector{         + (1-a)^2}{+(2-b)^2} & \twovector{+(2 -2a)^2}{+(4 -2b)^2} \\
+                \twovector{         + (5-a)^2}{+(7-b)^2} & \twovector{+(10-2a)^2}{+(14-2b)^2} \\
+                \end{array}
+                \right) \\
+        & = \frac16 \left( 15a^2 - 60a + 15b^2 - 90b + 395 \right).
+    \end{align*}
+    \item The gradient with respect to $\vtheta = \ptwovector{a}{b}$ is
+    \begin{align*}
+        \nabla_\vtheta \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert^2 & = \frac16 \begin{pmatrix} 30a - 60 \\ 30b - 90 \end{pmatrix} \\
+        & = 5 \begin{pmatrix}a - 2 \\ b - 3 \end{pmatrix}
+    \end{align*}
+    which is zero at $a = 2$, $b = 3$. Thus $f^*(x) = \ptwovector{2x}{3x}$.
+    \item For $x = 1$ the mean value of $\vy$ is $\ptwovector{2}{3}$ and for $x = 2$ the mean value of $\vy$ is $\ptwovector{4}{6}$. Both satisfy $\vy = \ptwovector{2x}{3x}$, matching $f^*$ in the previous part.
+    \item Again with six data points, the expected value is $\frac16$ of the sum.
+    \begin{align*}
+        \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert_1 & = \frac16 \sum_{i=1}^6 \lvert y^{(i)}_1-ax^{(i)}\rvert + \lvert y^{(i)}_2-bx^{(i)} \rvert \\
+        & = \frac{1}{6} \left(
+                \begin{array}{c c}
+                \twovector{\phantom{+}\lvert 0-a \rvert}{+\lvert 0-b \rvert} & \twovector{+\lvert 0 -2a \rvert}{+\lvert 0 -2b \rvert} \\
+                \twovector{         + \lvert 1-a \rvert}{+\lvert 2-b \rvert} & \twovector{+\lvert 2 -2a \rvert}{+\lvert 4 -2b \rvert} \\
+                \twovector{         + \lvert 5-a \rvert}{+\lvert 7-b \rvert} & \twovector{+\lvert 10-2a \rvert}{+\lvert 14-2b \rvert} \\
+                \end{array}
+                \right) \\
+        & = \frac36 \left( \lvert a \rvert + \lvert 1-a \rvert + \lvert 5-a \rvert + 
+                           \lvert b \rvert + \lvert 2-b \rvert + \lvert 7-b \rvert \right) \\
+        & = \frac12 \left( \lvert a \rvert + \lvert a-1 \rvert + \lvert a-5 \rvert + 
+                           \lvert b \rvert + \lvert b-2 \rvert + \lvert b-7 \rvert \right)
+        \end{align*} 
+    \item Let $N$ be the expected value computed in the previous question. Note that for $a < 1, \frac{\partial N}{\partial a} < 0$ and for $a > 1, \frac{\partial N}{\partial a} > 0$. Similarly for $b < 2, \frac{\partial N}{\partial b} < 0$ and for $b > 2, \frac{\partial N}{\partial b} > 0$. Thus the minimum is at $a = 1, b = 2$. 
+    
+    Further note that $N$ is not differentiable, so the gradient is not guaranteed to find its minimum. However, it happens to work here: the gradient with respect to $\vtheta = \ptwovector{a}{b}$ is
+    \begin{equation*}
+        \nabla_\vtheta \E_{x,\vy\sim\pdata}\lVert \vy - f(x)\rVert_1 = \frac12 \begin{pmatrix} \sign(a) + \sign(a-1) + \sign(a-5) \\
+                                                 \sign(b) + \sign(b-2) + \sign(b-7) \end{pmatrix}
+    \end{equation*}
+    which is zero exactly at $a = 1, b = 2$. 
+    \item For $x = 1$ the median value of $\vy$ is $\ptwovector{1}{2}$ and for $x = 2$ the mean value of $\vy$ is $\ptwovector{2}{4}$. Both satisfy $\vy = \ptwovector{1x}{2x}$, matching $a=1, b=2$ in the previous part.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_bernoulli_solution} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Regardless of $y$, 
+\begin{align*}
+        \frac{\exp(yz)}{\sum_{y' = 0}^1 \exp(y'z)} 
+    & = \frac{\exp(yz)}{\exp(0z) + \exp(1z)}  \\
+    & = \frac{\exp(yz)}{1        + \exp(z)}.
+\end{align*}
+
+If $y = 0$, then this is $\frac{1}      {1 + \exp(z)} = \sigma(-z)$.
+
+If $y = 1$, then this is $\frac{\exp(z)}{1 + \exp(z)}$. Divide by $\exp(z)$ to get $\frac{1}{\exp(-z) + 1} = \sigma(z)$.
+
+This is exactly the function 
+\begin{equation*}
+    \sigma((2y-1)z) = \begin{cases} \sigma(-z) & \text{ if } y = 0 \\ 
+                                    \sigma(z)  & \text{ if } y = 1.
+                      \end{cases}
+\end{equation*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_softmax_solution} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item $\softmax \ptwovector{7}{7}$ has the same thing in both arguments: $\frac{e^7}{e^7 + e^7} = \frac12$. So $\softmax \ptwovector{7}{7} = \ptwovector{0.5}{0.5}$.
+    \item In the first slot we have $\frac{\exp(\ln 3)}{\exp(\ln 3) + \exp(0)} = \frac{3}{4}$. 
+    
+    In the second slot we have $\frac{\exp(0)}{\exp(\ln 3) + \exp(0)} = \frac{1}{4}$.
+    
+    Thus $\softmax\ptwovector{\ln 3}{0} = \ptwovector{0.75}{0.25}$.
+    
+    \item In the first slot we have $\frac{\exp(9 \ln 3)}{\exp(9 \ln 3) + \exp(\ln 3)} = \frac{3^9}{3^9 + 3} = \frac{3^8}{3^8+1}$.
+    
+    In the second slot we have $\frac{\exp(\ln 3)}{\exp(9 \ln 3) + \exp(\ln 3)} = \frac{3}{3^9 + 3} = \frac{1}{3^8+1}$.
+    
+    Thus $\softmax \ptwovector{9\ln 3}{\ln 3} \approx \ptwovector{0.9998}{0.0002}$.
+    
+    \item This is the same input as the previous part, but with both inputs shifted by $a - \ln 3$, so it has the same output: $\softmax \ptwovector{a + 8\ln 3}{a} \approx \ptwovector{0.9998}{0.0002}$. To see the cancellation in the first argument worked out:
+    
+    \begin{equation*}
+    \frac{\exp(a + 8\ln 3)}{\exp(a + 8\ln 3)+\exp(a)} = \frac{\exp(a) \cdot 3^8}{\exp(a) \cdot 3^8 + \exp(a)} = \frac{3^8}{3^8 + 1}.
+    \end{equation*}
+    
+    \item \begin{align*}
+              \softmax \left(\begin{smallmatrix} 
+                          6               \\ 3              \\ 0 
+                       \end{smallmatrix} \right) 
+    & \approx \softmax \left(\begin{smallmatrix} 
+                          2 \ln 20        \\ \ln 20         \\ 0 
+                       \end{smallmatrix} \right) \\
+    & =       \softmax \left(\begin{smallmatrix} 
+                          \ln 400         \\ \ln 20         \\ \ln 1 
+                       \end{smallmatrix} \right) \\
+    & =                \left(\begin{smallmatrix} 
+                          \frac{400}{421} \\ \frac{20}{421} \\ \frac{1}{421} 
+                       \end{smallmatrix} \right) \\
+    & \approx          \left(\begin{smallmatrix} 
+                          \frac{19}{20}   \\ \frac{1}{20}   \\ \frac{1}{400} 
+                       \end{smallmatrix} \right) \\
+    & =                \left(\begin{smallmatrix} 
+                          0.9500          \\ 0.0500         \\ 0.0025 
+                       \end{smallmatrix} \right).
+    \end{align*}
+                     
+    Of course the true values add up to 1; if we calculate with no approximations until the end, we can see that the quick estimate above is quite close:
+    
+    $       \softmax \left(\begin{smallmatrix} 
+                        6        \\ 3      \\ 0 
+                     \end{smallmatrix} \right)
+    =                \left(\begin{smallmatrix} 
+                        \frac{e^6}{e^6+e^3+e^0} & 
+                        \frac{e^3}{e^6+e^3+e^0} & 
+                        \frac{e^0}{e^6+e^3+e^0} 
+                     \end{smallmatrix}\right)^T
+     \approx         \left(\begin{smallmatrix} 
+                        0.9503    \\ 0.0473 \\ 0.0024 
+                     \end{smallmatrix} \right)$.              
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_linearhiddenunit_solution} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item $\mW = \begin{pmatrix} \phantom{-}1 & \phantom{-}3 & \phantom{-}5 \\ -1 & -3 & -5 \end{pmatrix}$.
+    \item The clue is that the transformation is rank 1, so we should use $q = 1$. This leads us to 
+    
+    $\mU = \begin{pmatrix} \phantom{-}1 \\ -1 \end{pmatrix}, 
+           \mV = \begin{pmatrix} 1 & 3 & 5 \end{pmatrix}$.
+    \item The model has two inputs, so $n = 2$. The model has three outputs, so $p = 3$. The entire model has rank 1 due to the action of $\mU$ and $\mV$, so $q = 1$. 
+    
+    When training a model to match this one, using $\vy = \mW^T \vx$ requires the model to learn $np = 6$ parameters, but when using a linear hidden unit so that $\vy = \mV^T \mU^T \vx$, the model only has to learn $(n+p)q = 5$ parameters. This effect would be even more pronounced for larger values of $n$ and $p$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_chainrule_solution} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item $z(x) = 3x^2 + 12x + 40$.
+    \item $\frac{dz}{dx} = 6x + 12$.
+    \item $\frac{dz}{dx} = 3\cdot2x + 4\cdot 3 + 5\cdot 0 = 6x + 12$.
+    \item $\frac{dz}{dx} = \begin{pmatrix} 3 & 4 & 5 \end{pmatrix} \cdot \begin{pmatrix} 2x \\ 3 \\ 0 \end{pmatrix} = 6x + 12$.
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_chainbackprop_solution} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item Since $f(a) = a^2 + 1, f'(a) = 2a$. We can then find all the values of the variables:
+    \begin{align*}
+        w & = 1 \\
+        x & = w^2 + 1 = 2 \\
+        y & = x^2 + 1 = 5
+    \end{align*}
+    then find the derivatives in question:
+    \begin{align*}
+        f'(w) & = 2w = 2 \\
+        f'(x) & = 2x = 4 \\
+        f'(y) & = 2y = 10
+    \end{align*}
+    Thus $\frac{dz}{dw} = 2\cdot4\cdot10 = 80$. This process used a significant amount of memory due to its intermediate computations, but all the intermediate computations were simple operations.
+    \item This time we avoid intermediate computations:\begin{align*}
+    \frac{dz}{dw} & = f'(f(f(w)))                f'(f(w))            f'(w) \\
+                  & = 2\left((w^2+1)^2+1 \right) 2\left(w^2+1\right) 2(w) \\
+                  & = 2\left(w^4+2w^2+1+1\right) 2\left(w^2+1\right) 2(w) \\
+                  & = 8\left(w^4+2w^2+2  \right)  \left(w^2+1\right)  (w) \\
+    \left.\frac{dz}{dw}\right\vert_{w=1} 
+                  & = 8\left(5\right)\left(2\right)(1) \\
+                  & = 80.
+    \end{align*}
+    This process used less memory (we stored no intermediate values), but we unnecessarily computed $f(w) = w^2+1$ multiple times.
+    
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_gradientsimplification_solution}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item We know $q_j = \frac{\exp(z_j)}{\sum_k \exp(z_k)}$, so we can simplify $\log q_j = z_j - \log \sum_k \exp(z_k)$. Then we can take derivatives:
+    \begin{align*}
+        \frac{\partial}{\partial z_i} \log q_j 
+        & = \underset{(i\neq j)}{0}           - \frac{1}{\sum_k \exp(z_k)} \frac{\partial}{\partial z_i} \sum_k \exp(z_k) \\
+        & = \phantom{\underset{(i\neq j)}{0}} - \frac{1}{\sum_k \exp(z_k)} \exp(z_i) \\
+        & = - q_i.
+    \end{align*}
+    \item Again simplify $\log q_i = z_i - \log \sum_k \exp(z_k)$, then take derivatives:
+    \begin{align*}
+        \frac{\partial}{\partial z_i} \log q_i 
+        & = \underset{(i= j)}{1} - \frac{1}{\sum_k \exp(z_k)} \frac{\partial}{\partial z_i} \sum_k \exp(z_k) \\
+        & = 1 - \frac{1}{\sum_k \exp(z_k)} \exp(z_i) \\
+        & = 1 - q_i.
+    \end{align*}
+    \item Since $J = - \sum_j p_j \log q_j$, the partial derivatives of this sum are linear combinations of the answers to the previous parts.
+    \begin{align*}
+        \frac{\partial J}{\partial z_i} 
+        & = +p_1q_i + p_2q_i - \cdots -p_i(1-q_i) + \cdots \\
+        & = -p_i + \sum_j p_jq_i \\
+        & = -p_i + \left(\sum_j p_j\right) q_i, \text{ but } \sum_j p_j = 1, \text{ so} \\
+        & = q_i - p_i.   
+    \end{align*}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\item \label{DFN_ex_Christianson_solution}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{enumerate}
+    \item $\mH = \begin{pmatrix} 2 & 1 \\ 1 & 0 \end{pmatrix}$, so $\mH \vv = \begin{pmatrix} 2a+b \\ a \end{pmatrix}$.
+    \item If it were significantly easier to compute $\nabla_\vx$ than $\mH$, you might prefer this path:\begin{align*}
+        \phantom{\nabla_\vx[(}\nabla_\vx f(\vx)\phantom{)^T \vv]} & = \ptwovector{2x_1 + x_2}{x_1} \\
+        \phantom{\nabla_\vx[}(\nabla_\vx f(\vx))^T \vv\phantom{]} & = 2x_1a + x_2a + x_1b \\
+                 \nabla_\vx[(\nabla_\vx f(\vx))^T \vv]            & = \ptwovector{2a+b}{a}.
+    \end{align*}
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{\em Solutions contributed by Chris Cunningham}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
